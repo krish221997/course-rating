@@ -8,12 +8,15 @@ var { User } = require('./models/user');
 
 var app = express();
 const port = process.env.PORT || 3000;
+var categories=['java','python','machine learning','bootstrap','html','css','anguar','ionic'];
 
 app.use(bodyParser.json());
 app.post('/courses', (req,res) => {
     var course = new Course({
         title: req.body.title,
-        url: req.body.url
+        url: req.body.url,
+        category:req.body.category,
+        
     });
     course.save().then((doc) => {
         res.send({title:"Test Title"});
@@ -30,6 +33,18 @@ app.get('/courses', (req,res) => {
 });
 
 //GET /courses/9797967554
+app.get('/categories',(req,res) => {
+    res.send(categories);
+})
+app.get('/courses/category=:name',(req,res) => {
+    var name=req.params.name;
+    Course.find({category:name}).then((doc) => {
+        res.send(doc);
+    }).catch((e)=>{
+        res.status(400).send();
+    })
+})
+
 app.get('/courses/:id', (req,res) => {
     var id = req.params.id;
     //validate id TODO and respond with 404
@@ -46,7 +61,7 @@ app.get('/courses/:id', (req,res) => {
 })
 
 app.post('/users/register', (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
+    var body = _.pick(req.body, ['email', 'password','username']);
     var user = new User (body);
     user.save().then((user) => {
         res.send(user);

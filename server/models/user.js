@@ -12,6 +12,11 @@ var User = mongoose.model('User',{
             message: '{VALUE} is not a valid email'
         }
     },
+    username:{
+        type:String,
+        requried:true
+
+    },
     password: {
         type: String,
         require: true
